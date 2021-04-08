@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<title>Insert title here</title>
+<script type="text/javascript">
+	function sendData() {
+		fetch('/user', {
+			method:'POST',
+			headers: {
+			      'Content-Type': 'application/json'
+			    },
+			    body:JSON.stringify({
+			    	name: document.getElementById('username').value,
+			    	email: document.getElementById('email').value,
+			    	mobileNumber: document.getElementById('mobileNumber').value
+			    })
+		});
+		clear();
+		let msg = document.createElement("div");  
+		msg.textContent = "User Created";         
+		document.body.appendChild(msg);  
+	}
+	
+	function getData(){
+		fetch('/user/'+document.getElementById('userid').value)
+		.then(response => response.json())
+		.then(json => {
+		let users = JSON.stringify(json)
+		users = JSON.parse(users)
+		
+		let usersTable = "<table border='1|1'>";
+		usersTable+="<tr>";
+		usersTable+="<th>Id</th>";
+		usersTable+="<th>Name</th>";
+		usersTable+="<th>Email</th>";
+		usersTable+="<th>Mobile Number</th>";
+		
+		if(users.id){
+					usersTable+="<tr>";
+				    usersTable+="<td>"+users.id+"</td>";
+				    usersTable+="<td>"+users.name+"</td>";
+				    usersTable+="<td>"+users.email+"</td>";
+				    usersTable+="<td>"+users.mobileNumber+"</td>";
+				    usersTable+="</tr>";
+				}
+			for (let i = 0; i < users.length; i++) {
+			    usersTable+="<tr>";
+			    usersTable+="<td>"+users[i].id+"</td>";
+			    usersTable+="<td>"+users[i].name+"</td>";
+			    usersTable+="<td>"+users[i].email+"</td>";
+			    usersTable+="<td>"+users[i].mobileNumber+"</td>";
+			    usersTable+="</tr>";
+			}
+			usersTable+="</table>";
+			document.getElementById("box").innerHTML = usersTable;})
+			clear();
+	}
+	
+	function updateData(){
+		fetch('/user/'+document.getElementById('userid').value, {
+			method:'PUT',
+			headers: {
+			      'Content-Type': 'application/json'
+			    },
+			    
+			    body:JSON.stringify({
+			    	name: document.getElementById('username').value,
+			    	email: document.getElementById('email').value,
+			    	mobileNumber: document.getElementById('mobileNumber').value
+			    })
+		});
+		let msg = document.createElement("div");  
+		msg.textContent = "User Updated";         
+		document.body.appendChild(msg);  
+		clear();
+	}
+	
+	function clear(){
+		document.getElementById('userid').value = "";
+		document.getElementById('username').value = "";
+		document.getElementById('email').value = "";
+		document.getElementById('mobileNumber').value = "";
+	}
+</script>
+</head>
+<body>
+	<input placeholder="ID" id="userid">
+	<button onclick="getData()">Get User</button>
+	<br>
+	<input placeholder="Name" id="username">
+	<br>
+	<input placeholder="Email" id="email">
+	<br>
+	<input placeholder="Mobile Number" maxlength="10" id="mobileNumber">
+	<br>
+	<br>
+	<button onclick="sendData()">Save</button>
+	<button onclick="updateData()">Update User</button>
+	<br>
+	<br>
+	<br>
+	<div id="box"></div>
+
+</body>
+</html>
